@@ -1,29 +1,37 @@
-# Importing required modules
-import requests
+#!/bin/bash
 
-# Input for phone number and message
-number = input("Enter the phone number with country code (e.g., +201012345678): ")
-message = input("Enter your message: ")
+# Clear the screen
+clear
 
-# Confirm sending
-confirm = input("Do you want to send the message? (y/n): ").lower()
+# Ask for phone number
+echo "Please enter the phone number (include country code, e.g., +201012345678): "
+read number
 
-if confirm == "y":
-    # Sending the message using a POST request
-    url = "https://www.globfone.com/send-sms"
-    data = {
-        "number": number,
-        "message": message,
-        "submit": "Send"
-    }
+# Simulate loading
+echo "Processing..."
+sleep 2
 
-    # Sending the request
-    response = requests.post(url, data=data)
+# Ask if the user wants to send the message
+echo "Do you want to send the message? (y/n): "
+read confirm
 
-    # Checking the response
-    if "success" in response.text.lower():
-        print(f"Message sent successfully to {number}!")
-    else:
-        print("Failed to send the message. Please try again.")
-else:
-    print("Message sending canceled.")
+if [[ "$confirm" == "y" || "$confirm" == "Y" ]]; then
+    # Simulate sending the message
+    echo "Sending message..."
+    sleep 2
+    
+    # Sending the SMS using Globfone's API
+    response=$(curl -s -X POST "https://www.globfone.com/send-sms" \
+        -d "number=$number" \
+        -d "message=مرحبا عزيزي" \
+        -d "submit=Send")
+    
+    # Check if the message was successfully sent
+    if [[ $response == *"success"* ]]; then
+        echo "Message sent successfully to $number!"
+    else
+        echo "Failed to send the message. Please try again."
+    fi
+else
+    echo "Message not sent."
+fi
